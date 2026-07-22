@@ -2,7 +2,7 @@
 // Runs entirely in the tablet's browser. Uses the Web Speech API for both
 // listening (SpeechRecognition) and speaking (SpeechSynthesis).
 
-const BACKEND_URL = "https://YOUR-RENDER-APP.onrender.com"; // <-- set after deploy
+const BACKEND_URL = "https://guru-voice-assistant.onrender.com; // <-- set after deploy
 const WAKE_PHRASE = "hey guru";
 
 const stage = document.querySelector(".stage");
