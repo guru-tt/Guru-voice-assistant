@@ -90,13 +90,15 @@ function startRecognition() {
     handleUtterance(text);
   };
 
-  recognition.onerror = (event) => {
+recognition.onerror = (event) => {
+    // Just log it - onend always fires right after onerror, so let
+    // onend be the single source of truth for restarting. Having both
+    // handlers restart caused a runaway double-restart loop.
     console.warn("Recognition error:", event.error);
-    // 'no-speech' and 'aborted' are routine - just restart the loop.
-    if (running && !busy) restartSoon();
   };
 
   recognition.onend = () => {
+    recognition = null;
     if (running && !busy) restartSoon();
   };
 
@@ -104,14 +106,15 @@ function startRecognition() {
     recognition.start();
     setState("listening", 'say "hey guru" to start');
   } catch (e) {
-    // start() can throw if called while already running - safe to ignore
+    console.warn("start() failed:", e);
+    restartSoon();
   }
 }
 
 function restartSoon() {
   setTimeout(() => {
     if (running && !busy) startRecognition();
-  }, 250);
+  }, 600);
 }
 
 function toggleListening() {
