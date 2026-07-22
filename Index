@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+  <title>Guru Assistant</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#14171c" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="stage">
+    <div class="eyebrow">GURU AUTOMATIONS &mdash; VOICE</div>
+
+    <div class="orb-wrap">
+      <button id="micBtn" class="orb" aria-label="Toggle listening">
+        <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M12 15a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/>
+          <path d="M19 11a7 7 0 0 1-14 0"/>
+          <line x1="12" y1="18" x2="12" y2="22"/>
+        </svg>
+      </button>
+      <div class="ring ring-1"></div>
+      <div class="ring ring-2"></div>
+    </div>
+
+    <div id="status" class="status">say &ldquo;hey guru&rdquo; to start</div>
+
+    <div class="transcript-wrap">
+      <div id="heard" class="transcript heard"></div>
+      <div id="answer" class="transcript answer"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
