@@ -14,8 +14,8 @@ const answerEl = document.getElementById("answer");
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
 let recognition = null;
-let running = false; // whether the mic loop is turned on at all
-let busy = false; // true while thinking/speaking - ignore input then
+let running = false;
+let busy = false;
 
 function setState(mode, text) {
   stage.classList.remove("listening", "thinking", "speaking");
@@ -47,7 +47,7 @@ async function askBackend(question) {
 
 async function handleUtterance(rawText) {
   const lower = rawText.toLowerCase().trim();
-  if (!lower.startsWith(WAKE_PHRASE)) return; // ignore anything not addressed to us
+  if (!lower.startsWith(WAKE_PHRASE)) return;
 
   const question = rawText.slice(rawText.toLowerCase().indexOf(WAKE_PHRASE) + WAKE_PHRASE.length).trim();
   if (!question) {
@@ -81,19 +81,29 @@ function startRecognition() {
     return;
   }
   recognition = new SpeechRecognition();
-  recognition.continuous = false; // restart manually - more reliable across Android Chrome versions
-  recognition.interimResults = false;
+  recognition.continuous = true;
+  recognition.interimResults = true;
   recognition.lang = "en-US";
 
   recognition.onresult = (event) => {
-    const text = event.results[event.results.length - 1][0].transcript;
+    if (busy) return;
+
+    const result = event.results[event.results.length - 1];
+    const text = result[0].transcript;
+
+    if (!result.isFinal) {
+      heardEl.textContent = `"${text}"`;
+      return;
+    }
+
     handleUtterance(text);
   };
 
-recognition.onerror = (event) => {
-    // Just log it - onend always fires right after onerror, so let
-    // onend be the single source of truth for restarting. Having both
-    // handlers restart caused a runaway double-restart loop.
+  recognition.onstart = () => {
+    console.log("Recognition started - mic is active.");
+  };
+
+  recognition.onerror = (event) => {
     console.warn("Recognition error:", event.error);
   };
 
@@ -129,7 +139,6 @@ function toggleListening() {
 
 micBtn.addEventListener("click", toggleListening);
 
-// Register the service worker for installability.
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("sw.js").catch(() => {});
