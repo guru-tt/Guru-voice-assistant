@@ -100,11 +100,11 @@ function startRecognition() {
   };
 
   recognition.onstart = () => {
-    console.log("Recognition started - mic is active.");
+    setState("listening", "mic active - listening...");
   };
 
   recognition.onerror = (event) => {
-    console.warn("Recognition error:", event.error);
+    setState("listening", `error: ${event.error}`);
   };
 
   recognition.onend = () => {
@@ -124,7 +124,7 @@ function startRecognition() {
 function restartSoon() {
   setTimeout(() => {
     if (running && !busy) startRecognition();
-  }, 600);
+  }, 2000);
 }
 
 function toggleListening() {
